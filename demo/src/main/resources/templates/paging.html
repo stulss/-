@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>상품 목록 페이지</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2 class="mt-3">상품 목록</h2>
+    <input type="text" id="search" placeholder="상품 검색">
+    <div id="product-list"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    let products = []; // 상품 목록을 저장할 변수
+
+    function fetchProducts() {
+        axios.get('/products/')
+            .then(function(response) {
+                products = response.data; // API 응답을 products 변수에 저장
+                renderProducts(products); // 상품 목록을 화면에 출력
+            })
+            .catch(function(error) {
+                console.error(error);
+                alert('상품 목록을 불러오는데 실패하였습니다.');
+            });
+    }
+
+    function renderProducts(products) {
+        const productList = document.querySelector('#product-list');
+
+        productList.innerHTML = '';
+        products.forEach(function(product) {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                    <h4><a href="/product/${product.id}">${product.productName}</a></h4>
+                    <p>${product.description}</p>
+                    <hr>
+                `;
+            productList.appendChild(div);
+        });
+    }
+
+    fetchProducts();
+
+    document.querySelector('#search').addEventListener('input', function(event) {
+        const searchText = event.target.value.toLowerCase();
+
+        // 이미 불러온 상품 목록에서 필터링
+        const filteredProducts = products.filter(function(product) {
+            return product.productName.toLowerCase().includes(searchText);
+        });
+
+        renderProducts(filteredProducts); // 필터링된 상품 목록을 화면에 출력
+    });
+</script>
+</body>
+</html>
