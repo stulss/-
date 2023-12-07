@@ -1,14 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>쇼핑몰 홈페이지</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <title>Shopping Mall</title>
+  <style>
+    /* CSS 스타일링 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px 20px;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+    }
+    nav ul li {
+      margin-right: 20px;
+    }
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+    .product-card {
+      width: 300px;
+      margin: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .login-info {
+      float: right;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h2 class="mt-3">쇼핑몰 홈페이지</h2>
-  <a href="/product/productList" class="btn btn-primary mr-2">상품 목록 보기</a>
-  <a href="/product/create" class="btn btn-secondary">상품 등록하기</a>
-</div>
+
+<header>
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="#">Contact</a></li>
+      <!-- 로그인 버튼 또는 로그인한 이메일 표시 -->
+      <li class="login-info">
+        <span th:if="${isLoggedIn}">
+          Logged in as <span th:text="${memberEmail}"></span>
+        </span>
+        <span th:unless="${isLoggedIn}">
+          <a href="/loginPage">Login</a>
+        </span>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-container">
+  <!-- 여기에 타임리프를 사용하여 상품 카드를 동적으로 생성할 예정입니다 -->
+  <div th:each="product : ${products}" class="product-card">
+    <h3 th:text="${product.getProductName()}"></h3>
+    <p th:text="${product.price}"></p>
+    <!-- 기타 상품 정보들 -->
+  </div>
+</main>
+<script th:inline="javascript">
+  // 서버에서 세션 정보를 가져오는 함수
+  function fetchSessionInfo() {
+    return fetch('/getSessionInfo', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok.');
+              }
+              return response.json();
+            })
+            .catch(error => {
+              console.error('There was a problem with the fetch operation:', error);
+            });
+  }
+
+  document.addEventListener('DOMContentLoaded', async function() {
+    try {
+      const sessionInfo = await fetchSessionInfo();
+      const isLoggedIn = sessionInfo.isLoggedIn;
+      const memberEmail = sessionInfo.userEmail;
+
+      const loginInfoElement = document.querySelector('.login-info');
+
+      if (isLoggedIn) {
+        const loggedInInfo = document.createElement('span');
+        loggedInInfo.innerHTML = `Logged in as <span>${memberEmail}</span>`;
+        loginInfoElement.appendChild(loggedInInfo);
+      } else {
+        const loginLink = document.createElement('a');
+        loginLink.setAttribute('href', '/loginPage');
+        loginLink.innerText = 'Login';
+        loginInfoElement.appendChild(loginLink);
+      }
+    } catch (error) {
+      console.error('There was a problem with fetching session information:', error);
+    }
+  });
+
+</script>
 </body>
 </html>

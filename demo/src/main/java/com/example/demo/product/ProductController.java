@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,8 +20,11 @@ public class ProductController {
 
     // 상품 등록
     @PostMapping("/save")
-    public Product createProduct(@RequestBody ProductResponse.create product) {
-        return productService.createProduct(product);
+    public ResponseEntity<?> createProduct(@ModelAttribute ProductResponse.create product,
+                                           @RequestParam MultipartFile[] files) throws IOException {
+        productService.createProduct(product,files);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.success(null);
+        return ResponseEntity.ok(apiResult);
     }
 
     // 전체 상품 확인

@@ -1,0 +1,32 @@
+<!-- cart.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+
+<h1>Cart</h1>
+
+<div th:each="item : ${cartItems}">
+    <h2 th:text="${item.product.name}"></h2>
+    <p th:text="${item.product.description}"></p>
+    <p>Quantity: <span th:text="${item.quantity}"></span></p>
+    <!-- 장바구니에 담긴 상품 리스트 표시 -->
+</div>
+
+<form th:action="@{'/carts/update'}" method="get">
+    <input type="hidden" name="cartId" th:value="${cartItem.id}">
+    <input type="number" name="quantity" th:value="${cartItem.quantity}">
+    <button type="submit">Update Quantity</button>
+</form>
+<!-- 장바구니에 담긴 상품 수량 업데이트 기능 -->
+
+<form th:action="@{'/orders/save'}" method="post">
+    <button type="submit">Place Order</button>
+</form>
+<!-- 주문하기 기능 -->
+
+</body>
+</html>

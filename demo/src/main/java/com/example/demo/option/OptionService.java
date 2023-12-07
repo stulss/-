@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OptionService {
     private final OptionRepository optionRepository;
     private final ProductRepository productRepository;
 
+    @Transactional
     public Option save(OptionResponse.FindAll findAll) {
         Optional<Product> optional = productRepository.findById(findAll.getProductId());
 

@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
     public final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -40,9 +41,10 @@ public class MemberService {
         try{
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                     = new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword());
+            // 비인증
             Authentication authentication =  authenticationManager.authenticate(
-                    usernamePasswordAuthenticationToken
-            );
+                    usernamePasswordAuthenticationToken);
+            //
             CustomUserDetails customUserDetails = (CustomUserDetails)authentication.getPrincipal();
             return JwtTokenProvider.create(customUserDetails.getMember());
         }catch (Exception e){

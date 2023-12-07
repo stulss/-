@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 50%;
+            margin: auto;
+            padding-top: 50px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/products">Products</a></li>
+            <li><a href="#">Contact</a></li>
+            <li class="login-info">
+        <span th:if="${isLoggedIn}">
+          Logged in as <span th:text="${memberEmail}"></span>
+        </span>
+                <span th:unless="${isLoggedIn}">
+          <a href="/loginPage">Login</a>
+        </span>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>Login</h1>
+
+    <form th:action="@{/login}" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="button" onclick="submitForm()">Login</button>
+    </form>
+    <button><a href="/joinPage">회원가입</a></button>
+</div>
+
+<script th:inline="javascript">
+    // 서버에서 세션 정보를 가져오는 함수
+    function fetchSessionInfo() {
+        return fetch('/getSessionInfo', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.json();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const sessionInfo = await fetchSessionInfo();
+            const isLoggedIn = sessionInfo.isLoggedIn;
+            const memberEmail = sessionInfo.memberEmail;
+
+            const loginInfoElement = document.querySelector('.login-info');
+
+            if (isLoggedIn) {
+                const loggedInInfo = document.createElement('span');
+                loggedInInfo.innerHTML = `Logged in as <span>${memberEmail}</span>`;
+                loginInfoElement.appendChild(loggedInInfo);
+            } else {
+                const loginLink = document.createElement('a');
+                loginLink.setAttribute('href', '/loginPage');
+                loginLink.innerText = 'Login';
+                loginInfoElement.appendChild(loginLink);
+            }
+        } catch (error) {
+            console.error('There was a problem with fetching session information:', error);
+        }
+    });
+
+</script>
+</body>
+</html>
