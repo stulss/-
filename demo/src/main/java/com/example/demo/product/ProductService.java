@@ -1,6 +1,7 @@
 package com.example.demo.product;
 
 import com.example.demo.core.error.exception.Exception404;
+import com.example.demo.file.FileDTO;
 import com.example.demo.option.Option;
 import com.example.demo.option.OptionRepository;
 import com.example.demo.file.FileRepository;
@@ -164,12 +165,23 @@ public class ProductService {
 
         int size = 5;
 
-        Page<Product> products = productRepository.findAll(PageRequest.of(page,size));
+        Page<Product> products = productRepository.findAll(PageRequest.of(page, size));
+        FileDTO fileDTO = new FileDTO();
 
-        return products.map(product -> new ProductResponse.PagingDto(
-                product.getId(),
-                product.getProductName(),
-                product.getImage(),
-                product.getPrice()));
+        return products.map(product -> {
+            String imagePath = null;
+
+            if (!product.getFiles().isEmpty()) {
+                ProductFile file = product.getFiles().get(0);
+                imagePath = "/image/" + file.getUuid() + "/" + file.getFileName();
+            }
+
+            return new ProductResponse.PagingDto(
+                    product.getId(),
+                    product.getProductName(),
+                    product.getPrice(),
+                    imagePath  // imagePath 전달
+            );
+        });
     }
 }

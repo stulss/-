@@ -1,5 +1,6 @@
 package com.example.demo.product;
 
+import com.example.demo.file.ProductFile;
 import com.example.demo.option.Option;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,11 +42,11 @@ public class ProductResponse {
                     .build();
         }
 
-        public create(Product product){
+        public create(Product product,ProductFile productFile){
             this.id = product.getId();
             this.productName = product.getProductName();
             this.description = product.getDescription();
-            this.image = product.getImage();
+            this.image = productFile.getFilePath();
             this.price = product.getPrice();
         }
     }
@@ -159,7 +160,7 @@ public class ProductResponse {
         private String productName;
 
         // 이미지 정보
-        private String image;
+        private String imagePath;
 
         // 가격
         private String price;
@@ -168,7 +169,7 @@ public class ProductResponse {
             return Product.builder()
                     .id(id)
                     .productName(productName)
-                    .image(image)
+                    .image(imagePath)
                     .price(price)
                     .build();
         }

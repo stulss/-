@@ -2,22 +2,29 @@ package com.example.demo.domain;
 
 import com.example.demo.core.security.JwtTokenProvider;
 import com.example.demo.member.Member;
-import com.example.demo.member.MemberRequest;
 import com.example.demo.member.MemberService;
-import com.example.demo.product.ProductRequest;
 import com.example.demo.product.ProductResponse;
 import com.example.demo.product.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,13 +32,13 @@ import java.util.Optional;
 @AllArgsConstructor
 public class HomeController {
 
+
     private final ProductService productService;
     private final MemberService memberService;
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request) {
-        List<ProductResponse.FindAllDTO> productDTOS = productService.findAll(0);
-        model.addAttribute("products", productDTOS);
+
 
         // 쿠키에서 토큰을 가져옵니다.
         Cookie[] cookies = request.getCookies();
@@ -61,13 +68,13 @@ public class HomeController {
     @GetMapping("/products/paging")
     public String productList(@PageableDefault(page = 1)Pageable pageable, Model model) {
 
-        Page<ProductResponse.PagingDto> boards = productService.paging(pageable);
+        Page<ProductResponse.PagingDto> products = productService.paging(pageable);
 
         int blockLimit = 3;
         int startPage = (int)(Math.ceil((double)pageable.getPageNumber() / blockLimit) - 1) * blockLimit + 1;
-        int endPage = ((startPage + blockLimit - 1) < boards.getTotalPages()) ? (startPage + blockLimit - 1) : boards.getTotalPages();
+        int endPage = ((startPage + blockLimit - 1) < products.getTotalPages()) ? (startPage + blockLimit - 1) : products.getTotalPages();
 
-        model.addAttribute("productList", boards);
+        model.addAttribute("productList", products);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage",endPage);
 
@@ -90,5 +97,7 @@ public class HomeController {
     public String join() {
         return "join"; // 회원가입 페이지로 이동하는 뷰 이름
     }
+
+
 
 }

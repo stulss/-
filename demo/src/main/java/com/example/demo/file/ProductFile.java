@@ -10,6 +10,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "product_file_tb",
+        indexes = {
+                @Index(name = "product_file_product_id_index", columnList = "product_id")
+        })
 public class ProductFile {
 
     @Id
@@ -32,7 +36,6 @@ public class ProductFile {
     private Long fileSize;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
     private Product product;
 
     @Builder
@@ -55,16 +58,3 @@ public class ProductFile {
         this.uuid = fileDTO.getUuid();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

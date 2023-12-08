@@ -66,7 +66,7 @@
     <label for="productPrice">Price:</label>
     <input type="number" id="productPrice" name="price" required><br><br>
 
-    <input type="file" name="file" multiple><br><br>
+    <input type="file" name="files" multiple><br><br>
 
     <button type="submit">상품 등록</button>
   </form>
@@ -76,18 +76,27 @@
 <script>
   document.getElementById('productForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    // 여기에 상품 등록 로직을 추가하세요 (AJAX 등)
-    // 성공적으로 등록되었다는 메시지를 표시하고 목록 페이지로 이동하는 코드
-    // 여기서는 메시지를 보여주고 확인을 누르면 상품 목록 페이지로 이동하는 것으로 예시를 드리겠습니다.
-    document.getElementById('successMessage').style.display = 'block';
 
-    const confirmed = confirm('상품을 성공적으로 등록하였습니다. 상품 목록 페이지로 이동하시겠습니까?');
-    if (confirmed) {
-      window.location.href = '/products/paging'; // 상품 목록 페이지 URL로 변경해주세요
-    } else {
-      // 사용자가 취소를 눌렀을 때 추가적인 처리가 필요한 경우 작성할 수 있습니다.
-      // 여기에 코드를 추가해주세요.
-    }
+    // 상품 등록 로직
+    const productData = new FormData(this);
+    const request = new XMLHttpRequest();
+
+    request.onreadystatechange = function () {
+      if (request.readyState === 4 && request.status === 200) {
+        // 성공 메시지 표시
+        document.getElementById('successMessage').style.display = 'block';
+        const confirmed = confirm('상품을 성공적으로 등록하였습니다. 상품 목록 페이지로 이동하시겠습니까?');
+        if (confirmed) {
+          window.location.href = '/products/paging'; // 상품 목록 페이지 URL로 변경해주세요
+        } else {
+          // 사용자가 취소를 눌렀을 때 추가적인 처리가 필요한 경우 작성할 수 있습니다.
+          // 여기에 코드를 추가해주세요.
+        }
+      }
+    };
+
+    request.open('POST', '/products/save');
+    request.send(productData);
   });
 </script>
 

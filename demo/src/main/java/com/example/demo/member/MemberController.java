@@ -37,7 +37,7 @@ public class MemberController {
         // 쿠키 설정
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(60 * 60 * 24); // 24시간 유효
+        cookie.setMaxAge(60 * 60 * 24*30); // 24시간 유효
         cookie.setPath("/"); // 모든 경로에서 쿠키 접근 가능
         response.addCookie(cookie);
 

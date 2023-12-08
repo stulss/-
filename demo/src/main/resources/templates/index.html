@@ -67,10 +67,11 @@
 
 <main class="main-container">
   <!-- 여기에 타임리프를 사용하여 상품 카드를 동적으로 생성할 예정입니다 -->
-  <div th:each="product : ${products}" class="product-card">
-    <h3 th:text="${product.getProductName()}"></h3>
+  <h1>Product List</h1>
+  <div th:each="product : ${productList}">
+    <h2 th:text="${product.productName}"></h2>
     <p th:text="${product.price}"></p>
-    <!-- 기타 상품 정보들 -->
+    <img th:src="@{${product.imagePath}}" alt="상품 이미지">
   </div>
 </main>
 <script th:inline="javascript">
