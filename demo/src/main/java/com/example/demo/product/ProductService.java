@@ -158,4 +158,18 @@ public class ProductService {
         }
     }
 
+    public Page<ProductResponse.PagingDto> paging(Pageable pageable) {
+
+        int page = pageable.getPageNumber() - 1;
+
+        int size = 5;
+
+        Page<Product> products = productRepository.findAll(PageRequest.of(page,size));
+
+        return products.map(product -> new ProductResponse.PagingDto(
+                product.getId(),
+                product.getProductName(),
+                product.getImage(),
+                product.getPrice()));
+    }
 }

@@ -37,6 +37,19 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-card img {
+            width: 100%;
+            height: auto;
+        }
+        .product-card h3 {
+            margin: 0;
+        }
+        .product-card p {
+            margin: 0;
         }
     </style>
 </head>
@@ -46,35 +59,32 @@
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/products">Products</a></li>
+            <li><a href="/products/paging">Products</a></li>
             <li><a href="#">Contact</a></li>
             <li><a href="/loginPage">Login</a></li>
         </ul>
     </nav>
 </header>
-
-<div class="container">
+<main class="main-container">
     <button> <a href="/product/create">상품등록</a></button>
 
     <h1>Product List</h1>
-    <div class="row">
-        <!-- Assume 'products' is the list of products from the backend -->
-        <div th:each="product : ${products}" class="col-md-4">
-            <div class="card">
-                <img th:src="${product.image}" class="card-img-top" alt="Product Image">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${product.productName}"></h5>
-                    <p class="card-text" th:text="${product.description}"></p>
-                    <p class="card-text" th:text="${product.price}"></p>
-                    <!-- Add other product information here as needed -->
-                    <!-- Add a button or link for more details or actions related to the product -->
-                    <a th:href="@{/products/} + ${product.id}" class="btn btn-primary">Details</a>
-                </div>
-            </div>
-        </div>
+    <div th:each="product : ${productList}" class="product-card">
+        <img src="image-url" alt="Product Image"> <!-- 이미지 URL을 적절하게 변경해주세요 -->
+        <h3 th:text="${product.getProductName()}"></h3>
+        <p th:text="${product.price}"></p>
+        <!-- 기타 상품 정보들 -->
     </div>
 
-</div>
+    <!-- 페이징 처리 -->
+    <div class="pagination">
+        <a th:if="${startPage > 1}" th:href="@{/products/paging?page=(startPage - 1)}">Previous</a>
+        <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+            <a th:href="@{/products/paging?page=${pageNum}}" th:text="${pageNum}"></a>
+        </span>
+        <a th:if="${endPage < productList.getTotalPages()}" th:href="@{/products/paging?page=(endPage + 1)}">Next</a>
+    </div>
+</main>
 
 </body>
 </html>

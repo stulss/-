@@ -146,4 +146,31 @@ public class ProductResponse {
             this.quantity = option.getQuantity();
         }
     }
+
+    @Data
+    @ToString
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PagingDto{
+        // PK
+        private Long id;
+
+        // 상품명(필수)
+        private String productName;
+
+        // 이미지 정보
+        private String image;
+
+        // 가격
+        private String price;
+
+        public Product toHomepage(){
+            return Product.builder()
+                    .id(id)
+                    .productName(productName)
+                    .image(image)
+                    .price(price)
+                    .build();
+        }
+    }
 }

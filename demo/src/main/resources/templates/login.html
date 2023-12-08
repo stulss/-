@@ -1,167 +1,57 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            width: 50%;
-            margin: auto;
-            padding-top: 50px;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 30px;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-    </style>
+    <title>로그인 페이지</title>
 </head>
 <body>
+<h1>로그인</h1>
+<form id="loginForm" th:action="@{/login}" method="post">
+    <div>
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" th:required="required">
+    </div>
+    <div>
+        <label for="password">비밀번호:</label>
+        <input type="password" id="password" name="password" th:required="required">
+    </div>
+    <button type="submit">로그인</button>
+</form>
 
-<header>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/products">Products</a></li>
-            <li><a href="#">Contact</a></li>
-            <li class="login-info">
-        <span th:if="${isLoggedIn}">
-          Logged in as <span th:text="${memberEmail}"></span>
-        </span>
-                <span th:unless="${isLoggedIn}">
-          <a href="/loginPage">Login</a>
-        </span>
-            </li>
-        </ul>
-    </nav>
-</header>
-
-<div class="container">
-    <h1>Login</h1>
-
-    <form th:action="@{/login}" method="post" enctype="application/x-www-form-urlencoded">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <button type="button" onclick="submitForm()">Login</button>
-    </form>
-    <button><a href="/joinPage">회원가입</a></button>
-</div>
+<!-- 회원가입 버튼 추가 -->
+<a href="/joinPage">회원가입</a>
 
 <script th:inline="javascript">
-    // 서버에서 세션 정보를 가져오는 함수
-    function fetchSessionInfo() {
-        return fetch('/getSessionInfo', {
-            method: 'GET',
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출을 막습니다.
+
+        // 폼에서 값을 가져옵니다.
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // 로그인 엔드포인트로 POST 요청을 보냅니다.
+        fetch('/login', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({ email: email, password: password })
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok.');
+                if (response.ok) {
+                    // 로그인이 성공하면 홈페이지로 리다이렉트합니다.
+                    alert('로그인 성공!');
+                    window.location.href = '/'; // 홈페이지로 리다이렉트
+                } else {
+                    // 로그인 실패 시 오류 처리 (예: 오류 메시지 표시)
+                    alert('로그인 실패. 이메일과 비밀번호를 확인하세요.');
                 }
-                return response.json();
             })
             .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
+                console.error('오류:', error);
+                alert('로그인 중 오류가 발생했습니다.');
             });
-    }
-
-    document.addEventListener('DOMContentLoaded', async function() {
-        try {
-            const sessionInfo = await fetchSessionInfo();
-            const isLoggedIn = sessionInfo.isLoggedIn;
-            const memberEmail = sessionInfo.memberEmail;
-
-            const loginInfoElement = document.querySelector('.login-info');
-
-            if (isLoggedIn) {
-                const loggedInInfo = document.createElement('span');
-                loggedInInfo.innerHTML = `Logged in as <span>${memberEmail}</span>`;
-                loginInfoElement.appendChild(loggedInInfo);
-            } else {
-                const loginLink = document.createElement('a');
-                loginLink.setAttribute('href', '/loginPage');
-                loginLink.innerText = 'Login';
-                loginInfoElement.appendChild(loginLink);
-            }
-        } catch (error) {
-            console.error('There was a problem with fetching session information:', error);
-        }
     });
-
 </script>
 </body>
 </html>

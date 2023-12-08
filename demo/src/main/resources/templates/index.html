@@ -50,18 +50,18 @@
   <nav>
     <ul>
       <li><a href="/">Home</a></li>
-      <li><a href="/products">Products</a></li>
+      <li><a href="/products/paging">Products</a></li>
       <li><a href="#">Contact</a></li>
-      <!-- 로그인 버튼 또는 로그인한 이메일 표시 -->
-      <li class="login-info">
-        <span th:if="${isLoggedIn}">
-          Logged in as <span th:text="${memberEmail}"></span>
-        </span>
-        <span th:unless="${isLoggedIn}">
-          <a href="/loginPage">Login</a>
-        </span>
-      </li>
+      <li th:if="${memberEmail == null}"><a href="/loginPage">Login</a>
+        <div class="login-info">
+          <!-- 로그인 정보는 멤버 이메일이 있을 때만 표시합니다 -->
+          <p th:if="${memberEmail != null}" th:text="${memberEmail}"></p>
+        </div></li> <!-- 로그인 버튼은 멤버 이메일이 없을 때만 표시합니다 -->
     </ul>
+    <div class="login-info">
+      <!-- 로그인 정보는 멤버 이메일이 있을 때만 표시합니다 -->
+      <p th:if="${memberEmail != null}" th:text="${memberEmail}"></p>
+    </div>
   </nav>
 </header>
 
@@ -74,47 +74,6 @@
   </div>
 </main>
 <script th:inline="javascript">
-  // 서버에서 세션 정보를 가져오는 함수
-  function fetchSessionInfo() {
-    return fetch('/getSessionInfo', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok.');
-              }
-              return response.json();
-            })
-            .catch(error => {
-              console.error('There was a problem with the fetch operation:', error);
-            });
-  }
-
-  document.addEventListener('DOMContentLoaded', async function() {
-    try {
-      const sessionInfo = await fetchSessionInfo();
-      const isLoggedIn = sessionInfo.isLoggedIn;
-      const memberEmail = sessionInfo.userEmail;
-
-      const loginInfoElement = document.querySelector('.login-info');
-
-      if (isLoggedIn) {
-        const loggedInInfo = document.createElement('span');
-        loggedInInfo.innerHTML = `Logged in as <span>${memberEmail}</span>`;
-        loginInfoElement.appendChild(loggedInInfo);
-      } else {
-        const loginLink = document.createElement('a');
-        loginLink.setAttribute('href', '/loginPage');
-        loginLink.innerText = 'Login';
-        loginInfoElement.appendChild(loginLink);
-      }
-    } catch (error) {
-      console.error('There was a problem with fetching session information:', error);
-    }
-  });
 
 </script>
 </body>
