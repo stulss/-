@@ -40,6 +40,10 @@ public class MemberService {
         try{
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                     = new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword());
+
+            String encodedPassword = passwordEncoder.encode("qwer1234!");
+            System.out.println(encodedPassword);
+
             // 비인증
             Authentication authentication =  authenticationManager.authenticate(
                     usernamePasswordAuthenticationToken);

@@ -31,7 +31,7 @@ public class ProductService {
     private final OptionRepository optionRepository;
     private final FileRepository fileRepository;
 
-    private final String filePath = "C:/Users/G/Desktop/green/Board Files/";
+    private final String filePath = "C:/Users/G/Desktop/demo/src/main/resources/templates/img/";
 
     @Transactional
     public void createProduct(ProductResponse.create createDto, MultipartFile[] files) throws IOException {

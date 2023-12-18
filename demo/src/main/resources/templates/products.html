@@ -74,7 +74,7 @@
              background-color: #f4f4f4;
          }
         header {
-            box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
         nav ul li a {
             color: white;
@@ -137,11 +137,10 @@
         </div>
     </div>
 </div>
-    <!-- 페이징 처리 -->
-    <div class="pagination">
-        <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" th:href="@{/products/paging(page=${pageNum})}" th:text="${pageNum}"></a>
-    </div>
-</main>
+<!-- 페이징 처리 -->
+<div class="pagination">
+    <a th:each="pageNum : ${#numbers.sequence(startPage, endPage)}" th:href="@{/products/paging(page=${pageNum})}" th:text="${pageNum}"></a>
+</div>
 
 </body>
 </html>

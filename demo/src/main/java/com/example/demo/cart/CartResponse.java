@@ -39,7 +39,7 @@ public class CartResponse {
 
 
         @Data
-        public class ProductDTO{
+        public static class ProductDTO{
             private Long id;
             private String productName;
             List<CartDTO> cartDTOS;

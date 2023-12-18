@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
-    private static final String FILE_DIRECTORY = "C:/Users/G/Desktop/green/Board Files/";
+    private static final String FILE_DIRECTORY = "C:/Users/G/Desktop/demo/src/main/resources/templates/img/";
     private final ProductService productService;
 
     // 상품 등록

@@ -30,7 +30,6 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid MemberRequest.JoinDTO requestDTO, Error error, HttpServletResponse response) {
         String token = memberService.login(requestDTO);
-
         // "Bearer " 접두사 제거
         token = token.replace(JwtTokenProvider.TOKEN_PREFIX, "");
 
